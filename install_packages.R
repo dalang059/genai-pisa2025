@@ -3,5 +3,6 @@ install.packages(c(
   "WeMix",     # 4.0.3
   "lavaan",    # 0.7-2
   "semTools",  # 0.5-9
-  "MASS"       # 7.3-65
+  "MASS",      # 7.3-65
+  "mice"       # 3.19.0
 ), repos = "https://cloud.r-project.org")
