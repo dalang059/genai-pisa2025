@@ -27,7 +27,7 @@ AI = ["ST438Q01DA", "ST438Q02DA", "ST438Q03DA", "ST438Q04DA"]    # summarize, re
 META = ["ST432Q02DA", "ST432Q03DA", "ST432Q04DA", "ST432Q06DA"]  # index GOALSET
 HELP = ["ST433Q01DA", "ST433Q02DA", "ST433Q04DA", "ST433Q06DA"]  # index SELFREG
 EFF = ["ST129Q03TA", "ST129Q05TA", "ST129Q08DA", "ST129Q11DA", "ST129Q12DA", "ST129Q14DA"]
-PVS = [f"PV{i}SCIE" for i in range(1, 11)]
+PVS = [f"PV{i}{dom}" for dom in ("SCIE", "MATH", "READ") for i in range(1, 11)]
 REPS = [f"W_FSTURWT{r}" for r in range(1, 81)]
 STUDENT_VARS = (["CNT", "CNTSCHID", "CNTSTUID", "W_FSTUWT", "ST004D01T", "ST001D01T", "AGE", "ESCS",
                  "ST331Q03JA", "AIUSESCH", "GOALSET", "SELFREG", "EFFSCIE", "PERSEV", "FAMSUP",
@@ -52,6 +52,9 @@ d["nonuser"] = np.where(d[AI].isna().any(axis=1), np.nan, (d[AI] == 1).all(axis=
 
 # out-of-school AI tool use: category 6 = "not available to me outside school"
 d["ai_outside"] = d["IC171Q10DA"].where(d["IC171Q10DA"] != 6)
+
+# help seeking without "I only ask for help after trying hard ..." (items: 1 = strongly agree ... 4 = strongly disagree)
+d["help3"] = 5 - d[["ST433Q01DA", "ST433Q02DA", "ST433Q04DA"]].mean(axis=1, skipna=False)
 
 d.to_csv(OUT / "bsjz_analysis.csv", index=False)
 print(f"students: {len(d)}, schools: {d['CNTSCHID'].nunique()} -> {OUT / 'bsjz_analysis.csv'}")

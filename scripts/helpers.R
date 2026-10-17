@@ -39,6 +39,20 @@ prep_data <- function(required = REQUIRED, extra = list(), subset = NULL) {
   d
 }
 
+# replace the outcome by the plausible values of another domain ("MATH" or "READ")
+use_domain <- function(d, domain) {
+  w <- d$W_FSTUWT
+  sd_pv <- numeric(10)
+  for (i in 1:10) {
+    pv <- d[[paste0("PV", i, domain)]]
+    m <- weighted.mean(pv, w)
+    sd_pv[i] <- sqrt(weighted.mean((pv - m)^2, w))
+    d[[paste0("SCI", i)]] <- (pv - m) / sd_pv[i]
+  }
+  attr(d, "sci_sd") <- mean(sd_pv)
+  d
+}
+
 fit_mix <- function(rhs_formula, d) {
   m <- mix(as.formula(paste(rhs_formula, "+ (1|CNTSCHID)")), data = d, weights = c("w1", "w2"))
   list(est = m$coef, V = m$cov_mat)
